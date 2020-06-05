@@ -23,13 +23,13 @@ Thinking way back to math I rarely use, both sin and cos can be solved using a T
 
 
 ## Integer Algorithms
-The integer algorithms "brute force" or otherwise indirectly calculate the points on the circle.  In doing so, they do not rely on floating point numbers because they do not increment through angles.  
-
-### Radius Limits
-My first attempt relied on the formula for a circle (X^2 + Y^2 = R^2).  It looped through all X values (radius argument of the calculate function down to 0) and then looked for a Y value that falls on the radius of the circle.  The downside to this implementation is that for many X integer values, there is not a Y integer value that exactly fits the formula for the circle (i.e. 20^2 + 20^2 = 400, 20^2 + 21^2 = 441... if the radius 420 there isn't an integer Y that works for that X).  
+The integer algorithms "brute force" or otherwise indirectly calculate the points on the circle.  In doing so, they do not rely on floating point numbers because they do not increment through angles.  You can still take advantage of symmetry to only calculate 1/8th of a circle, but have to check for the 45 degree mark (X = Y) as you work.
 
 ### Radius Bound
 Thinking about it a little more, this is how radius limits should have been implemented.  Loop through all the X values and then look for the first Y value that causes you to bust the radius.  Stop looking when that happens and use Y - 1 as the Y value (the  last value that didn't bust the radius).  
 
 TODO: Need to implement the eights algorithm for these, currently only doing quarter symmetry.  Problem with the eights algorithm is figuring out when you have calculate 1/8th of the circle (could look for point at which X = Y, assuming that will always happen using these techniques).  
+
+### Walking Method
+I got this far without cheating.  The idea of incrementally moving from the starting point (radius, 0) and walking your way around the circle had occured to me.  However, I overthought it and didn't try to flesh it out.  After completing the radius bounds, I cheated and peaked at a writeup of a method.  Once I had the basic idea, I took a stab at custom writing the function.
 
