@@ -126,83 +126,33 @@ void expansionCircle::calc(int radius)
 	}
 }
 
-
 // ------------------------------------------------------------------------------
-// Integer approach: Try brute forcing a square area to detect find ide
-//
-// TODO: DONT THINK THIS ONE WORKS
+// Integer approach: Brute force finding integer points by incrementing through
+// each X value and then searching for a Y value that makes it exceed the radius.
+// 
+// Indexing issue where we are getting start and endpoints twice.
 // ------------------------------------------------------------------------------
-void bruteForceCircle::calc(int radius)
-{
-	//TODO: This is worst case size
-	result = new Point[4 * radius];
-	length = 0;
-
-	int radius_lower = radius * radius - 1;
-	int radius_upper = radius * radius + 1;
-
-	int min_col = 0;
-
-	//Only need increment number of points
-	for (int row = radius; row >= 0; row--)
-	{
-		for (int col = min_col; col <= radius; col++)
-		{
-			int pos = row * row + col * col;
-			if ((pos >= radius_lower) && (pos <= radius_upper))
-			{
-				result[length].X = row;
-				result[length].Y = col;
-				min_col = col;
-				++length;
-				break;
-			}
-		}
-	}
-
-	//Mirror
-	for (int i = 0; i < length; i++)
-	{
-		result[i + length].X = -1 * result[i].Y;
-		result[i + length].Y = result[i].X;
-
-		result[i + 2 * length].X = -1 * result[i].X;
-		result[i + 2 * length].Y = -1 * result[i].Y;
-
-		result[i + 3 * length].X = result[i].Y;
-		result[i + 3 * length].Y = -1 * result[i].X;
-	}
-
-	length = length * 4;
-}
-
-
-// ------------------------------------------------------------------------------
-// Integer approach: Try brute forcing a square area to detect find ide
-//
-// TODO: Assumes for now number is divisible by 4.  Could put check in but would
-// add a little bit of overhead for testing.
-// ------------------------------------------------------------------------------
-void strictBruteCircle::calc(int radius)
+void radiusBoundCircle::calc(int radius)
 {
 	//TODO: This is worst case size
 	result = new Point[4 * (radius+1)];
-	length = 0;
+	result[0].X = radius;
+	result[0].Y = 0;
+	length = 1;
 
 	int min_col = 0;
 
 	int radius_sq = radius * radius;
 
-	//Only need increment number of points
-	for (int row = radius; row >= 0; row--)
+	//This should take us to 45 degree  mark
+	while(result[length-1].X > result[length - 1].Y)
 	{
-		bool min_found = false;
+		result[length].X = result[length - 1].X - 1;
 		for (int col = min_col; col <= radius; col++)
 		{
-			int pos = row * row + col * col;
+			int pos = result[length].X * result[length].X + col * col;
 			if (pos > radius_sq)
 			{
-				result[length].X = row;
 				result[length].Y = col-1;
 				min_col = col-1;
 				++length;
@@ -214,14 +164,95 @@ void strictBruteCircle::calc(int radius)
 	//Mirror
 	for (int i = 0; i < length; i++)
 	{
-		result[i + length].X = -1 * result[i].Y;
-		result[i + length].Y = result[i].X;
+		result[2 * length - i - 1].X = result[i].Y;
+		result[2 * length - i - 1].Y = result[i].X;
 
-		result[i + 2 * length].X = -1 * result[i].X;
-		result[i + 2 * length].Y = -1 * result[i].Y;
+		//std::cout << "2*Length is " << 2 * length - i - 1 << std::endl;
 
-		result[i + 3 * length].X = result[i].Y;
-		result[i + 3 * length].Y = -1 * result[i].X;
+		result[2 * length + i].X = -1 * result[i].Y;
+		result[2 * length + i].Y = result[i].X;
+
+		result[4 * length - i - 1].X = -1 * result[i].X;
+		result[4 * length - i - 1].Y = result[i].Y;
+
+		result[i + 4 * length].X = -1 * result[i].X;
+		result[i + 4 * length].Y = -1 * result[i].Y;
+
+		result[6 * length - i - 1].X = -1 * result[i].Y;
+		result[6 * length - i - 1].Y = -1 * result[i].X;
+
+		result[i + 6 * length].X = result[i].Y;
+		result[i + 6 * length].Y = -1 * result[i].X;
+
+		result[8 * length - i - 1].X = result[i].X;
+		result[8 * length - i - 1].Y = -1 * result[i].Y;
 	}
-	length = length * 4;
+
+	length = length * 8;
+}
+
+
+// ------------------------------------------------------------------------------
+// Integer approach: Stair step.  Start at (radius, 0) and then walk up and check.
+// If exceed the radius, check moving in one.  
+// 
+// Indexing issue where we are getting start and endpoints twice.
+// ------------------------------------------------------------------------------
+void walkingCircle::calc(int radius)
+{
+	//TODO: This is worst case size
+	result = new Point[40 * (radius + 1)];
+	length = 0;
+
+	int radius_sq = radius * radius;
+
+	result[length].X = radius;
+	result[length].Y = 0;
+	length++;
+
+	//This should take us to 45 degree  mark
+	while (result[length - 1].X > result[length - 1].Y)
+	{
+		//Move directly up first, I think this will be more common since moving up
+		//and left would result in a straight line.  Since we are 'more positive' than
+		//a straight line, up should be more common than up and left.
+		result[length].X = result[length - 1].X;
+		result[length].Y = result[length - 1].Y + 1;
+
+		int pos = result[length].X * result[length].X + result[length].Y * result[length].Y;
+
+		if (pos > radius_sq)
+		{
+			result[length].X = result[length].X - 1;
+		}
+		length++;
+	}
+
+	//Mirror
+	for (int i = 0; i < length; i++)
+	{
+		result[2 * length - i - 1].X = result[i].Y;
+		result[2 * length - i - 1].Y = result[i].X;
+
+		//std::cout << "2*Length is " << 2 * length - i - 1 << std::endl;
+
+		result[2 * length + i].X = -1 * result[i].Y;
+		result[2 * length + i].Y = result[i].X;
+
+		result[4 * length - i - 1].X = -1 * result[i].X;
+		result[4 * length - i - 1].Y = result[i].Y;
+
+		result[i + 4 * length].X = -1 * result[i].X;
+		result[i + 4 * length].Y = -1 * result[i].Y;
+
+		result[6 * length - i - 1].X = -1 * result[i].Y;
+		result[6 * length - i - 1].Y = -1 * result[i].X;
+
+		result[i + 6 * length].X = result[i].Y;
+		result[i + 6 * length].Y = -1 * result[i].X;
+
+		result[8 * length - i - 1].X = result[i].X;
+		result[8 * length - i - 1].Y = -1 * result[i].Y;
+	}
+	length = length * 8;
 }
