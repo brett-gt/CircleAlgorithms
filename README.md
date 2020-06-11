@@ -4,13 +4,31 @@ Timing various algorithms used to determine points in a circle.
 I was watching a video about giving technical interviews.  The speaker mentioned finding technical questions which had multiple layers/solutions, starting with the obvious and then introducing levels of optimiziation. These can be worked through during an interview to explore critical thinking skills.  An example given was algorithms to determine the points a circle (think pixels that would need to be colored to draw the circle).  This peaked my interest, so I am attempting to implement has many circle algorithms as possible.  I am also timing them to see what improvements there really are...
 
 ## Overview
-The algorithms I am creating produce an array of integer pairs describing the (X,Y) coordinates that make up the circle.  The only input required for the algorithm is the radius of the circle (all circles are centered at (0, 0)).  
+The algorithms I am creating produce an array of integer pairs describing the (X,Y) coordinates that make up the circle.  The only input required for the algorithm is the radius of the circle.  
 
-Many of my algorithm implementation use the radius to determine indexing into the result array.  Based on shortcuts I am taking during implementation this requires the radius to be a multiple of 4 (or 8 in a few cases).  If it is not, integer math rounding could throw off the results or lead to buffer overflow issues.
+I am splitting algorithms into two classes: those that use floating point math and those which work on integers only.  The floating point algorithms all increment through angles and calculate (X,Y) using trig or equivalent functions.  The integer implementations "brute force" results by incrementing through X or Y coordinates and solving (with some educated guesswork to help) for the other coordinate.  
+
+Many of my algorithm implementation use the radius to determine indexing into the result array.  Based on shortcuts I am taking during implementation this requires the radius to be a multiple 8.  If it is not, integer math rounding could throw off the results or lead to buffer overflow issues.
+
+
+## Intersting Results
+
+The below table captures the approximate run times (averaged over 1000 runs of a 320 pixel radius circle).
+
+| Algorithm Name |  Run Time (ms) |
+|----------------|----------------|
+| Naive Circle   | 0.0497         |
+| Naive Eigth Circle | 0.0294     |
+| Taylor Expansion   | 0.0112     |
+| Radius Bound  | 0.00773 |
+| Walking Circle Efficient | 0.0497 |
+| Waling Circle Clean | 0.371 |
+
+
 
 ## Floating Point Algorithms
 
-I am splitting results into two classes: those that require floating point math (and then convert to integers at the end) and those which work on integers only).  The floating point algorithms all increment through angles and calculate (X,Y) using trig functions (or equivalent formulas).  
+
 
 ### Naive Implementation
 The "naive implementation" uses the Math.h trig functions (sin/cos) to calculate all points between 0 and 2 PI.  I expect this to be the worst implementation because of the number of calls to the library functions.
