@@ -24,6 +24,9 @@ The below table captures the approximate run times (averaged over 1000 runs of a
 | Walking Circle Efficient | 0.0497 |
 | Waling Circle Clean | 0.371 |
 
+As expected, on the floating point side using a Taylor expansion approximation of sin/cos functions, where we can determine the required accuracy and therefore the number of terms, is the most efficient.  
+
+On the integer side, my attempt at an integer implementation is much faster but draws a more sparse circle (it hits all the changes but does not do a good job filling in pixels between).  In doing two implementations of the "Microsoft" solution, I was surprised to see what I thought was the cleaner coding approach (using vector.push_back instead of pre-allocating an overly large array) was much slower.
 
 
 ## Floating Point Algorithms
