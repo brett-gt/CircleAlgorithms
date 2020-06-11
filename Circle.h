@@ -76,25 +76,48 @@ public:
 	void calc(int radius);
 };
 
-class bruteForceCircle : public baseCircle
+class radiusLimitsCircle : public baseCircle
 {
 public:
-	bruteForceCircle()
+	radiusLimitsCircle()
 	{
-		baseCircle::name = "BruteForceCircle";
+		baseCircle::name = "RadiusLimitsCircle";
 	}
 
 	void calc(int radius);
 };
 
-class strictBruteCircle : public baseCircle
+class radiusBoundCircle : public baseCircle
 {
 public:
-	strictBruteCircle()
+	radiusBoundCircle()
 	{
-		baseCircle::name = "StrictBruteForceCircle";
+		baseCircle::name = "RadiusBoundCircle";
 	}
 
 	void calc(int radius);
 };
+
+class walkingCircleClean : public baseCircle
+{
+public:
+	walkingCircleClean()
+	{
+		baseCircle::name = "WalkingCircleClean";
+	}
+
+	void calc(int radius);
+};
+
+class walkingCircleEfficient : public baseCircle
+{
+public:
+	walkingCircleEfficient()
+	{
+		baseCircle::name = "WalkingCircleEfficient";
+	}
+
+	void calc(int radius);
+};
+
 

@@ -62,7 +62,8 @@ int main(int argc, char** argv)
 	pointers.push_back(new naiveEightCircle());
 	pointers.push_back(new expansionCircle());
 	pointers.push_back(new radiusBoundCircle());
-	pointers.push_back(new walkingCircle());
+	pointers.push_back(new walkingCircleEfficient());
+	pointers.push_back(new walkingCircleClean());
 
 	//https://en.wikibooks.org/wiki/C%2B%2B_Programming/Classes/Abstract_Classes
 	for (auto func : pointers)
