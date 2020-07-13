@@ -22,7 +22,7 @@ The below table captures the approximate run times (averaged over 1000 runs of a
 | Taylor Expansion   | 0.0112     |
 | Radius Bound  | 0.00773 |
 | Walking Circle Efficient | 0.0497 |
-| Waling Circle Clean | 0.371 |
+| Walking Circle Clean | 0.371 |
 
 As expected, on the floating point side using a Taylor expansion approximation of sin/cos functions, where we can determine the required accuracy and therefore the number of terms, is the most efficient.  
 
